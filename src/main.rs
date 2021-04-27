@@ -4,6 +4,16 @@
 #![no_std]
 #![no_main]
 #![allow(unused_must_use)]
+#![feature(alloc_error_handler)]
+#![feature(never_type)]
+
+use alloc_cortex_m::CortexMHeap;
+#[global_allocator]
+static ALLOCATOR: CortexMHeap = CortexMHeap::empty();
+use core::alloc::Layout;
+
+extern crate alloc;
+use alloc::boxed::Box;
 
 use teensy4_bsp as bsp;
 use teensy4_bsp::hal::gpio;
@@ -32,12 +42,12 @@ fn main() -> ! {
     let mut d7 = gpio::GPIO::new(pins.p2).output();
 
     let mut lcd = liquid_crystal::LCD {
-        en: &mut en,
-        rs: &mut rs,
-        d4: &mut d4,
-        d5: &mut d5,
-        d6: &mut d6,
-        d7: &mut d7,
+        en: Box::new(en),
+        rs: Box::new(rs),
+        d4: Box::new(d4),
+        d5: Box::new(d5),
+        d6: Box::new(d6),
+        d7: Box::new(d7),
         st: &mut systick,
     };
 
@@ -50,4 +60,9 @@ fn main() -> ! {
         lcd.write_char(i);
         log::info!("Hello world");
     }
+}
+
+#[alloc_error_handler]
+fn oom(_: Layout) -> ! {
+    loop {}
 }

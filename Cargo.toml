@@ -11,6 +11,7 @@ embedded-hal = "0.2.3"
 # Remove me if you don't want logging
 log = "0.4.11"
 teensy4-panic = "0.2.0"
+alloc-cortex-m = "0.4.1"
 
 [dependencies.teensy4-bsp]
 version = "0.2"

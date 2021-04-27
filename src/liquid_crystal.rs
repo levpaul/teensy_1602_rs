@@ -1,25 +1,21 @@
 use embedded_hal::digital::v2::OutputPin;
 use teensy4_bsp::SysTick;
+extern crate alloc;
+use alloc::boxed::Box;
+use teensy4_bsp::hal::gpio::{Output, GPIO};
+use teensy4_bsp::hal::iomuxc::gpio::Pin;
 
-pub struct LCD<'a, A, B, C, D, E, F> {
-    pub en: &'a mut A,
-    pub rs: &'a mut B,
-    pub d4: &'a mut C,
-    pub d5: &'a mut D,
-    pub d6: &'a mut E,
-    pub d7: &'a mut F,
+pub struct LCD<'a> {
+    pub en: GPIO<Pin, Output>,
+    pub rs: GPIO<Pin, Output>,
+    pub d4: GPIO<Pin, Output>,
+    pub d5: GPIO<Pin, Output>,
+    pub d6: GPIO<Pin, Output>,
+    pub d7: GPIO<Pin, Output>,
     pub st: &'a mut SysTick,
 }
 
-impl<'a, A, B, C, D, E, F> LCD<'a, A, B, C, D, E, F>
-where
-    A: OutputPin,
-    B: OutputPin,
-    C: OutputPin,
-    D: OutputPin,
-    E: OutputPin,
-    F: OutputPin,
-{
+impl LCD {
     pub fn init(&mut self) {
         self.st.delay(50);
         self.command(0x00);
